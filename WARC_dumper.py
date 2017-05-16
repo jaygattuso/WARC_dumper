@@ -12,6 +12,9 @@ destination = r"C:\\my_project\file_dump"
 
 ################################################################################################
 
+file_dump = "file_dump"
+media_dump = "media_dump"
+
 if not os.path.exists(os.path.join(destination, file_dump)):
 	os.makedir(os.path.join(destination, file_dump))
 
@@ -23,11 +26,11 @@ with open(warc_file, 'rb') as stream:
 		if record.rec_type == 'response':
 			__, fname = record.rec_headers.get_header("WARC-Target-URI").rsplit("/", 1)
 			if fname.endswith(".jpg") or fname.endswith(".mp4") or fname.endswith(".png") or fname.endswith(".pdf"):
-				with open(os.path.join(media_dump, fname), "wb") as data:
+				with open(os.path.join(destination, media_dump, fname), "wb") as data:
 					data.write(record.content_stream().read())
 			else:
 				try:
-					with open(os.path.join(file_dump, fname), "wb") as data:
+					with open(os.path.join(destination, file_dump, fname), "wb") as data:
 						data.write(record.content_stream().read())
 				except:
 					print "Failed to write binary for: {}".format(record.rec_headers.get_header("WARC-Target-URI")) 
